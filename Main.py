@@ -17,7 +17,7 @@ def main():
     batch_size_train = 64
     batch_size_test = 64
     learning_rate = 0.01
-    momentum = 0.5
+    momentum = 0.2
     log_interval = 10
 
     random_seed = 1
@@ -40,8 +40,8 @@ def main():
                 torchvision.transforms.Normalize(
                     (0.1307,), (0.3081,))
                 ])),
-        batch_size=batch_size_test, shuffle=True, pin_memory=True, num_workers=4)
-
+        batch_size=batch_size_test, pin_memory=True, num_workers=4)
+    
     examples = enumerate(test_loader)
     batch_idx, (example_data, example_targets) = next(examples)
 
@@ -126,6 +126,28 @@ def main():
     plt.show()
     """
 
+    print("-------------------")
+    print(val_metrics['ROC'][0])
+    print("-------------------")
+    print(len(val_metrics['ROC'][0][0]))
+    #for a in range(0,len(val_metrics['ROC'][0][0])):
+        #print(val_metrics['ROC'][0][0][a])
+    print("-------------------")
+    print(val_metrics['ROC'][0][0][0])
+    print("-------------------")
+
+    x_val=[]
+    for i in range(0,len(val_metrics['ROC'][0][0])):
+        x_val.append(i/len(val_metrics['ROC'][0][0]))
+    for i in range(0,len(x_val)):
+        x_val[i].to(device)
+    plt.plot(x_val,val_metrics['ROC'][0][0])
+    plt.show()
+
+
+
+
+
 
 
 
@@ -154,7 +176,7 @@ def train(epoch):
     network.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         optimizer.zero_grad()
-        output = network(data)
+        output = network(da)
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
